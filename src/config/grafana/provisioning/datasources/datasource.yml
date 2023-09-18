@@ -42,6 +42,8 @@ datasources:
     basicAuth: false
     isDefault: false
     jsonData:
+      serviceMap:
+        datasourceUid: 'prometheus'
       nodeGraph:
         enabled: true
       search:

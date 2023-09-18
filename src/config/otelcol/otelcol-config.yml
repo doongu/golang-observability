@@ -26,8 +26,7 @@ receivers:
   fluentforward:
     endpoint: 0.0.0.0:8006
 
-processors:
-  batch:
+
 
 exporters:
   logging:
@@ -41,6 +40,18 @@ exporters:
     tls:
       insecure: true
       insecure_skip_verify: true  
+
+  prometheus:
+    endpoint: "otelcol:9464"
+    resource_to_telemetry_conversion:
+      enabled: true
+    enable_open_metrics: true
+processors:
+  batch:
+  spanmetrics:
+    metrics_exporter: prometheus
+
+
   # logs
   loki:
     endpoint: http://loki:3100/loki/api/v1/push
@@ -49,6 +60,8 @@ extensions:
   health_check:
   pprof:
   zpages:
+
+
 
 service:
   extensions: [health_check, pprof, zpages]
@@ -59,7 +72,7 @@ service:
       exporters: [prometheusremotewrite]
     traces:
       receivers: [otlp]
-      processors: [batch]
+      processors: [servicegraph , spanmetrics, batch]
       exporters: [otlp/tempo]
     logs:
       receivers: [otlp]
